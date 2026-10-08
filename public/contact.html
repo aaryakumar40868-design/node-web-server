@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Send a message using the server-validated contact form.">
+  <title>Contact — Static Pages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/" aria-label="Static Pages home"><span class="brand-mark">{ }</span><span>node<span class="brand-muted">/pages</span></span></a><nav aria-label="Main navigation"><a href="/">Home</a><a href="/about">About</a><a class="active" href="/contact">Contact</a></nav><a class="header-tag" href="/about"><span class="status-dot"></span> Express 4 · Node.js</a></header>
+  <main class="inner-page wrap contact-page"><p class="eyebrow"><span class="eyebrow-line"></span> 03 — GET IN TOUCH</p><h1 class="inner-title">Send a little<br><span>something.</span></h1><p class="inner-lede">This form makes a POST request to the server. It checks each field and lets you know if everything looks good.</p>
+    <div id="form-status" class="form-status" role="status" aria-live="polite" hidden></div>
+    <div class="contact-grid"><form class="contact-form" method="post" action="/contact"><label for="name">Your name <span>*</span></label><input id="name" name="name" type="text" placeholder="e.g. Alex Morgan" required maxlength="100" autocomplete="name"><label for="email">Email address <span>*</span></label><input id="email" name="email" type="email" placeholder="alex@example.com" required maxlength="254" autocomplete="email"><label for="message">Your message <span>*</span></label><textarea id="message" name="message" rows="5" placeholder="What would you like to say?" required maxlength="2000"></textarea><div class="form-bottom"><span>All fields are required.</span><button class="button button-primary" type="submit">Send message <span aria-hidden="true">↗</span></button></div></form><aside class="contact-aside"><div class="aside-icon">✳</div><p class="eyebrow">JUST SO YOU KNOW</p><h2>It’s a demo.</h2><p>The server validates your message and shows a status. It doesn’t store or email anything you submit.</p><div class="aside-divider"></div><span class="aside-label">THE ROUTE</span><code class="route-chip">POST&nbsp; /contact</code></aside></div>
+  </main>
+  <footer class="site-footer wrap"><a class="brand" href="/"><span class="brand-mark">{ }</span><span>node<span class="brand-muted">/pages</span></span></a><span>A small project in serving the web.</span><span class="footer-right">Built with Node.js &amp; Express</span></footer>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const status = document.getElementById('form-status');
+    if (params.get('sent') === '1') {
+      status.textContent = 'Thanks! Your message passed validation. This demo does not store or send it.';
+      status.classList.add('success');
+      status.hidden = false;
+    } else if (params.get('error') === '1') {
+      status.textContent = 'Please check your name, email address, and message, then try again.';
+      status.classList.add('error');
+      status.hidden = false;
+    }
+  </script>
+</body>
+</html>

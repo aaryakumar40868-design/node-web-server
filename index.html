@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=/public/index.html">
+  <title>Nexus — Modern Productivity Dashboard</title>
+  <script>
+    // Smooth redirect to the public dashboard if opened directly via file or static server
+    if (window.location.pathname.endsWith('index.html') && !window.location.pathname.includes('/public/')) {
+      window.location.replace('public/index.html' + window.location.search + window.location.hash);
+    } else {
+      window.location.replace('/' + window.location.search + window.location.hash);
+    }
+  </script>
+</head>
+<body style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #0f172a; color: #fff;">
+  <div style="text-align: center;">
+    <h2>Redirecting to Nexus Modern Dashboard...</h2>
+    <p><a href="public/index.html" style="color: #38bdf8;">Click here if not redirected automatically</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Modern, high-performance SaaS Dashboard for Notes, Tasks, Calendar, and Analytics.">
+  <title>Nexus — Modern Productivity Dashboard</title>
+
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.min.css">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+  <!-- Application Layout Shell -->
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar Navigation">
+      <div class="sidebar-header">
+        <a href="#dashboard" class="sidebar-brand" id="brand-link">
+          <div class="brand-icon">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">Nexus</span>
+            <span class="brand-subtitle">Workspace Pro</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Close sidebar">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Main Navigation">
+        <div class="nav-group-title">MAIN MENU</div>
+        
+        <button class="nav-item active" data-section="dashboard" id="nav-dashboard">
+          <i class="fas fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </button>
+        
+        <button class="nav-item" data-section="notes" id="nav-notes">
+          <i class="fas fa-sticky-note"></i>
+          <span>Notes</span>
+          <span class="nav-badge" id="nav-notes-badge">0</span>
+        </button>
+        
+        <button class="nav-item" data-section="tasks" id="nav-tasks">
+          <i class="fas fa-check-circle"></i>
+          <span>Tasks</span>
+          <span class="nav-badge warning" id="nav-tasks-badge">0</span>
+        </button>
+        
+        <button class="nav-item" data-section="calendar" id="nav-calendar">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Calendar</span>
+        </button>
+        
+        <button class="nav-item" data-section="analytics" id="nav-analytics">
+          <i class="fas fa-chart-line"></i>
+          <span>Analytics</span>
+        </button>
+        
+        <button class="nav-item" data-section="favorites" id="nav-favorites">
+          <i class="fas fa-star"></i>
+          <span>Favorites</span>
+          <span class="nav-badge gold" id="nav-favorites-badge">0</span>
+        </button>
+
+        <div class="nav-group-title">SYSTEM</div>
+        
+        <button class="nav-item" data-section="settings" id="nav-settings">
+          <i class="fas fa-sliders-h"></i>
+          <span>Settings</span>
+        </button>
+        
+        <button class="nav-item" data-section="help" id="nav-help">
+          <i class="fas fa-circle-question"></i>
+          <span>Help & Support</span>
+        </button>
+
+        <a href="/about" class="nav-item external-link" title="Explore server architecture">
+          <i class="fas fa-arrow-up-right-from-square"></i>
+          <span>About Server</span>
+        </a>
+
+        <a href="/contact" class="nav-item external-link" title="Contact Form Demo">
+          <i class="fas fa-paper-plane"></i>
+          <span>Contact Route</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar User Profile Footer -->
+      <div class="sidebar-footer">
+        <div class="sidebar-user" id="sidebar-user-trigger">
+          <div class="avatar-wrapper">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Avatar" class="avatar-img user-avatar-src">
+            <span class="status-indicator online"></span>
+          </div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name user-name-display">Alex Morgan</div>
+            <div class="sidebar-user-role user-role-display">Product Lead</div>
+          </div>
+        </div>
+        <button class="btn-logout" id="sidebar-logout-btn" title="Sign out of workspace">
+          <i class="fas fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Main Container -->
+    <main class="main-container">
+      
+      <!-- Top Navigation Header -->
+      <header class="top-navbar" id="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open mobile navigation">
+            <i class="fas fa-bars"></i>
+          </button>
+          
+          <div class="page-heading-wrapper">
+            <h1 class="page-title" id="page-title">Dashboard</h1>
+            <span class="page-subtitle" id="page-subtitle">Workspace Overview & Productivity</span>
+          </div>
+        </div>
+
+        <div class="navbar-center">
+          <!-- Global Search Bar -->
+          <div class="global-search-container" id="global-search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input 
+              type="text" 
+              class="global-search-input" 
+              id="global-search-input" 
+              placeholder="Search notes, tasks, tags... (Ctrl+K)" 
+              autocomplete="off"
+            >
+            <div class="search-shortcut">
+              <kbd>Ctrl</kbd><kbd>K</kbd>
+            </div>
+            
+            <!-- Dynamic Global Search Dropdown Results -->
+            <div class="search-results-dropdown" id="search-results-dropdown" hidden>
+              <div class="search-results-header">
+                <span id="search-results-count">Search Results</span>
+                <button class="btn-text-xs" id="clear-search-btn">Clear</button>
+              </div>
+              <div class="search-results-content" id="search-results-content">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="navbar-right">
+          <!-- Live Date & Clock Badge -->
+          <div class="clock-badge" id="live-clock-badge" title="Current Local Date & Time">
+            <i class="far fa-clock"></i>
+            <span id="live-time">--:-- --</span>
+            <span class="clock-sep">•</span>
+            <span id="live-date">---</span>
+          </div>
+
+          <!-- Theme Toggle Button -->
+          <button class="icon-action-btn" id="theme-toggle" aria-label="Toggle dark mode" title="Switch Theme (Light/Dark)">
+            <i class="fas fa-moon"></i>
+          </button>
+
+          <!-- Notifications Center Button & Dropdown -->
+          <div class="notifications-wrapper">
+            <button class="icon-action-btn" id="notifications-btn" aria-label="Open Notifications" title="Notifications">
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge" id="notification-badge" hidden>0</span>
+            </button>
+
+            <!-- Notifications Dropdown Panel -->
+            <div class="notifications-panel" id="notifications-panel" hidden>
+              <div class="notifications-panel-header">
+                <div class="panel-title">
+                  <i class="fas fa-bell"></i>
+                  <span>Notifications</span>
+                </div>
+                <div class="panel-actions">
+                  <button class="btn-text-xs" id="mark-notifications-read-btn">Mark read</button>
+                  <button class="btn-text-xs text-danger" id="clear-notifications-btn">Clear</button>
+                </div>
+              </div>
+              <div class="notifications-list" id="notifications-list">
+                <!-- Notifications injected via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- User Profile Menu -->
+          <div class="user-menu-wrapper" id="user-menu-wrapper">
+            <button class="user-profile-btn" id="user-profile-btn" aria-label="Open User Profile Menu">
+              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="User avatar" class="avatar-sm user-avatar-src">
+              <span class="user-name-short user-name-display">Alex M.</span>
+              <i class="fas fa-chevron-down caret-icon"></i>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div class="user-dropdown-menu" id="user-dropdown-menu" hidden>
+              <div class="dropdown-header">
+                <div class="dropdown-user-name user-name-display">Alex Morgan</div>
+                <div class="dropdown-user-email user-email-display">alex.morgan@example.com</div>
+              </div>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" id="menu-edit-profile-btn">
+                <i class="fas fa-user-pen"></i>
+                <span>Edit Profile</span>
+              </button>
+              <button class="dropdown-item" id="menu-settings-btn">
+                <i class="fas fa-sliders"></i>
+                <span>Settings</span>
+              </button>
+              <div class="dropdown-divider"></div>
+              <a href="/about" class="dropdown-item">
+                <i class="fas fa-circle-info"></i>
+                <span>About Server</span>
+              </a>
+              <a href="/contact" class="dropdown-item">
+                <i class="fas fa-envelope"></i>
+                <span>Contact Form</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item danger" id="menu-logout-btn">
+                <i class="fas fa-arrow-right-from-bracket"></i>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </header>
+
+      <!-- Content Area (SPA Sections) -->
+      <div class="content-area">
+
+        <!-- ==================================================== -->
+        <!-- 1. DASHBOARD SECTION                                 -->
+        <!-- ==================================================== -->
+        <section id="dashboard-section" class="page-section active" aria-labelledby="page-title">
+          
+          <!-- Welcome Hero Banner -->
+          <div class="welcome-hero">
+            <div class="welcome-content">
+              <div class="welcome-badge">
+                <span class="pulse-dot"></span>
+                <span id="welcome-date-text">Today</span>
+              </div>
+              <h2 class="welcome-greeting" id="welcome-greeting">Good Morning, Alex! 👋</h2>
+              <p class="welcome-quote" id="welcome-quote">"Focus on being productive instead of busy. Small consistent steps create massive results."</p>
+              
+              <!-- Quick Actions on Dashboard -->
+              <div class="welcome-quick-actions">
+                <button class="btn-hero primary" id="hero-create-note-btn">
+                  <i class="fas fa-pen-to-square"></i> Create Note
+                </button>
+                <button class="btn-hero secondary" id="hero-create-task-btn">
+                  <i class="fas fa-plus-circle"></i> Add Task
+                </button>
+                <button class="btn-hero ghost" id="hero-view-calendar-btn">
+                  <i class="fas fa-calendar-day"></i> View Calendar
+                </button>
+                <button class="btn-hero ghost" id="hero-view-analytics-btn">
+                  <i class="fas fa-chart-simple"></i> View Analytics
+                </button>
+              </div>
+            </div>
+
+            <div class="welcome-visual-art">
+              <div class="visual-badge-card">
+                <div class="badge-icon"><i class="fas fa-bolt"></i></div>
+                <div class="badge-info">
+                  <span class="badge-num" id="hero-productivity-rate">0%</span>
+                  <span class="badge-lbl">Task Completion</span>
+                </div>
+              </div>
+              <div class="art-glow art-glow-1"></div>
+              <div class="art-glow art-glow-2"></div>
+            </div>
+          </div>
+
+          <!-- Statistics Cards Grid -->
+          <div class="stats-cards-grid">
+            
+            <div class="stat-card" data-card="notes">
+              <div class="stat-icon-box blue">
+                <i class="fas fa-sticky-note"></i>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value" id="stat-total-notes">0</div>
+                <div class="stat-label">Total Notes</div>
+              </div>
+              <div class="stat-pill" id="stat-notes-pill">
+                <i class="fas fa-arrow-trend-up"></i> Active
+              </div>
+            </div>
+
+            <div class="stat-card" data-card="completed">
+              <div class="stat-icon-box green">
+                <i class="fas fa-circle-check"></i>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value" id="stat-completed-tasks">0</div>
+                <div class="stat-label">Completed Tasks</div>
+              </div>
+              <div class="stat-pill success" id="stat-completed-pill">
+                <i class="fas fa-check"></i> Done
+              </div>
+            </div>
+
+            <div class="stat-card" data-card="pending">
+              <div class="stat-icon-box amber">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value" id="stat-pending-tasks">0</div>
+                <div class="stat-label">Pending Tasks</div>
+              </div>
+              <div class="stat-pill warning" id="stat-pending-pill">
+                <i class="fas fa-hourglass-half"></i> In Progress
+              </div>
+            </div>
+
+            <div class="stat-card" data-card="favorites">
+              <div class="stat-icon-box gold">
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value" id="stat-favorites-count">0</div>
+                <div class="stat-label">Starred Favorites</div>
+              </div>
+              <div class="stat-pill gold" id="stat-favorites-pill">
+                <i class="fas fa-heart"></i> Highlighted
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Two Column Content Grid -->
+          <div class="dashboard-split-grid">
+            
+            <!-- Left Column: Recent Notes & Quick Tasks -->
+            <div class="split-col-left">
+              
+              <!-- Recent Notes Card -->
+              <div class="glass-card">
+                <div class="card-header-bar">
+                  <div class="card-title-group">
+                    <i class="fas fa-file-lines card-title-icon text-primary"></i>
+                    <h3>Recent Notes</h3>
+                  </div>
+                  <button class="btn-text-link" id="dash-view-all-notes-btn">
+                    View all notes <i class="fas fa-arrow-right"></i>
+                  </button>
+                </div>
+                <div class="recent-notes-container" id="dashboard-recent-notes">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+
+              <!-- Tasks Section on Dashboard -->
+              <div class="glass-card mt-6">
+                <div class="card-header-bar">
+                  <div class="card-title-group">
+                    <i class="fas fa-list-check card-title-icon text-warning"></i>
+                    <h3>Today's Task Queue</h3>
+                  </div>
+                  <div class="header-action-group">
+                    <div class="filter-pills-mini">
+                      <button class="mini-pill active" data-task-filter="all">All</button>
+                      <button class="mini-pill" data-task-filter="pending">Pending</button>
+                      <button class="mini-pill" data-task-filter="completed">Done</button>
+                    </div>
+                    <button class="btn-action-small" id="dash-add-task-btn" title="Add new task">
+                      <i class="fas fa-plus"></i> Add
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Quick Tasks Progress Bar -->
+                <div class="task-progress-box">
+                  <div class="progress-labels">
+                    <span id="dash-progress-label">Task Completion</span>
+                    <span id="dash-progress-percentage">0%</span>
+                  </div>
+                  <div class="progress-bar-track">
+                    <div class="progress-bar-fill" id="dash-progress-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="tasks-queue-list" id="dashboard-tasks-list">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Calendar Snapshot & Recent Activity -->
+            <div class="split-col-right">
+              
+              <!-- Upcoming Schedule & Events Snapshot -->
+              <div class="glass-card">
+                <div class="card-header-bar">
+                  <div class="card-title-group">
+                    <i class="fas fa-calendar-day card-title-icon text-info"></i>
+                    <h3>Upcoming Schedule</h3>
+                  </div>
+                  <button class="btn-text-link" id="dash-view-calendar-btn">
+                    Full Calendar <i class="fas fa-arrow-right"></i>
+                  </button>
+                </div>
+                <div class="upcoming-events-container" id="dashboard-upcoming-events">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+
+              <!-- Recent Activity Stream -->
+              <div class="glass-card mt-6">
+                <div class="card-header-bar">
+                  <div class="card-title-group">
+                    <i class="fas fa-timeline card-title-icon text-secondary"></i>
+                    <h3>Live Activity Stream</h3>
+                  </div>
+                </div>
+                <div class="activity-stream" id="dashboard-activity-stream">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- 2. NOTES SECTION                                     -->
+        <!-- ==================================================== -->
+        <section id="notes-section" class="page-section" aria-labelledby="notes-page-title">
+          <div class="section-title-bar">
+            <div>
+              <h2 id="notes-page-title">Notes Vault</h2>
+              <p class="section-desc">Create, categorize, organize, and pin your personal and professional thoughts.</p>
+            </div>
+            <button class="btn-primary" id="notes-new-btn">
+              <i class="fas fa-plus"></i> New Note
+            </button>
+          </div>
+
+          <!-- Notes Toolbar & Filters -->
+          <div class="filter-toolbar">
+            <div class="search-box-field">
+              <i class="fas fa-search"></i>
+              <input type="text" id="notes-search-input" placeholder="Search title or content...">
+            </div>
+
+            <div class="filter-chips-group" id="notes-category-chips">
+              <button class="filter-chip active" data-filter="all">All Notes</button>
+              <button class="filter-chip" data-filter="work"><i class="fas fa-briefcase"></i> Work</button>
+              <button class="filter-chip" data-filter="personal"><i class="fas fa-user"></i> Personal</button>
+              <button class="filter-chip" data-filter="ideas"><i class="fas fa-lightbulb"></i> Ideas</button>
+              <button class="filter-chip" data-filter="study"><i class="fas fa-graduation-cap"></i> Study</button>
+              <button class="filter-chip" data-filter="pinned"><i class="fas fa-thumbtack"></i> Pinned</button>
+              <button class="filter-chip" data-filter="favorite"><i class="fas fa-star"></i> Favorites</button>
+            </div>
+
+            <div class="sort-select-box">
+              <label for="notes-sort-select"><i class="fas fa-arrow-down-wide-short"></i></label>
+              <select id="notes-sort-select" class="form-select-sm">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="alpha-asc">Title (A-Z)</option>
+                <option value="alpha-desc">Title (Z-A)</option>
+                <option value="category">Category</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Notes Cards Grid -->
+          <div class="notes-cards-grid" id="notes-cards-grid">
+            <!-- Injected via JS -->
+          </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- 3. TASKS SECTION                                     -->
+        <!-- ==================================================== -->
+        <section id="tasks-section" class="page-section" aria-labelledby="tasks-page-title">
+          <div class="section-title-bar">
+            <div>
+              <h2 id="tasks-page-title">Task Management</h2>
+              <p class="section-desc">Track deliverables, deadlines, priority levels, and daily accomplishments.</p>
+            </div>
+            <button class="btn-primary" id="tasks-new-btn">
+              <i class="fas fa-plus"></i> New Task
+            </button>
+          </div>
+
+          <!-- Task Progress Metric Banner -->
+          <div class="task-metrics-banner">
+            <div class="metric-block">
+              <div class="metric-val" id="tasks-metric-completed">0</div>
+              <div class="metric-lbl">Completed</div>
+            </div>
+            <div class="metric-divider"></div>
+            <div class="metric-block">
+              <div class="metric-val" id="tasks-metric-pending">0</div>
+              <div class="metric-lbl">Pending</div>
+            </div>
+            <div class="metric-divider"></div>
+            <div class="metric-block">
+              <div class="metric-val" id="tasks-metric-rate">0%</div>
+              <div class="metric-lbl">Success Rate</div>
+            </div>
+            <div class="progress-bar-container-wide">
+              <div class="progress-bar-wide-track">
+                <div class="progress-bar-wide-fill" id="tasks-progress-wide-fill" style="width: 0%;"></div>
+              </div>
+              <div class="progress-bar-caption" id="tasks-progress-caption">0 of 0 tasks completed</div>
+            </div>
+          </div>
+
+          <!-- Tasks Toolbar -->
+          <div class="filter-toolbar">
+            <div class="search-box-field">
+              <i class="fas fa-search"></i>
+              <input type="text" id="tasks-search-input" placeholder="Search tasks by title or description...">
+            </div>
+
+            <div class="filter-chips-group" id="tasks-filter-chips">
+              <button class="filter-chip active" data-task-filter="all">All</button>
+              <button class="filter-chip" data-task-filter="pending">Pending</button>
+              <button class="filter-chip" data-task-filter="completed">Completed</button>
+              <button class="filter-chip" data-task-filter="high"><i class="fas fa-fire text-danger"></i> High Priority</button>
+              <button class="filter-chip" data-task-filter="medium"><i class="fas fa-triangle-exclamation text-warning"></i> Medium</button>
+              <button class="filter-chip" data-task-filter="low"><i class="fas fa-circle-info text-info"></i> Low</button>
+            </div>
+
+            <div class="sort-select-box">
+              <label for="tasks-sort-select"><i class="fas fa-arrow-down-wide-short"></i></label>
+              <select id="tasks-sort-select" class="form-select-sm">
+                <option value="dueDate">Due Date (Earliest)</option>
+                <option value="priority">Priority (High to Low)</option>
+                <option value="newest">Newest First</option>
+                <option value="alpha">Title (A-Z)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tasks List Display -->
+          <div class="tasks-full-list" id="tasks-full-list">
+            <!-- Injected via JS -->
+          </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- 4. CALENDAR SECTION                                  -->
+        <!-- ==================================================== -->
+        <section id="calendar-section" class="page-section" aria-labelledby="calendar-page-title">
+          <div class="section-title-bar">
+            <div>
+              <h2 id="calendar-page-title">Calendar & Scheduling</h2>
+              <p class="section-desc">Interactive monthly schedule syncing your tasks, deadlines, and milestones.</p>
+            </div>
+            <button class="btn-primary" id="calendar-add-event-btn">
+              <i class="fas fa-calendar-plus"></i> Add Task for Date
+            </button>
+          </div>
+
+          <div class="calendar-app-layout">
+            <!-- Left Side: Interactive Month Grid -->
+            <div class="calendar-card">
+              <div class="calendar-controls-bar">
+                <div class="calendar-month-nav">
+                  <button class="calendar-nav-btn" id="cal-prev-month" aria-label="Previous Month">
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <h3 class="calendar-current-month" id="calendar-month-display">October 2026</h3>
+                  <button class="calendar-nav-btn" id="cal-next-month" aria-label="Next Month">
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+                <button class="btn-secondary-sm" id="cal-today-btn">Today</button>
+              </div>
+
+              <!-- Weekdays Row -->
+              <div class="calendar-weekdays-grid">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+              </div>
+
+              <!-- Dynamic Days Grid -->
+              <div class="calendar-days-grid" id="calendar-days-grid">
+                <!-- Rendered dynamically via JS -->
+              </div>
+            </div>
+
+            <!-- Right Side: Selected Date Agenda -->
+            <div class="calendar-agenda-card">
+              <div class="agenda-header">
+                <div class="agenda-title-group">
+                  <span class="agenda-day-label" id="agenda-day-name">Selected Date</span>
+                  <h3 class="agenda-date-heading" id="agenda-date-heading">October 8, 2026</h3>
+                </div>
+                <button class="btn-action-small" id="agenda-quick-add-btn" title="Add task to this date">
+                  <i class="fas fa-plus"></i> Add
+                </button>
+              </div>
+
+              <div class="agenda-events-list" id="calendar-events-list">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- 5. ANALYTICS SECTION                                 -->
+        <!-- ==================================================== -->
+        <section id="analytics-section" class="page-section" aria-labelledby="analytics-page-title">
+          <div class="section-title-bar">
+            <div>
+              <h2 id="analytics-page-title">Analytics & Insights</h2>
+              <p class="section-desc">Performance metrics, workload distribution, and productivity analytics.</p>
+            </div>
+            <button class="btn-secondary" id="analytics-refresh-btn">
+              <i class="fas fa-arrows-rotate"></i> Refresh Charts
+            </button>
+          </div>
+
+          <!-- KPI Summary Strip -->
+          <div class="analytics-kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-icon blue"><i class="fas fa-file-pen"></i></div>
+              <div class="kpi-info">
+                <div class="kpi-value" id="kpi-notes-count">0</div>
+                <div class="kpi-label">Notes Documented</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon green"><i class="fas fa-circle-check"></i></div>
+              <div class="kpi-info">
+                <div class="kpi-value" id="kpi-tasks-completed">0</div>
+                <div class="kpi-label">Tasks Completed</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon purple"><i class="fas fa-percent"></i></div>
+              <div class="kpi-info">
+                <div class="kpi-value" id="kpi-completion-rate">0%</div>
+                <div class="kpi-label">Completion Velocity</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon gold"><i class="fas fa-star"></i></div>
+              <div class="kpi-info">
+                <div class="kpi-value" id="kpi-favorites-count">0</div>
+                <div class="kpi-label">Starred Items</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts 2x2 Grid -->
+          <div class="analytics-charts-grid">
+            
+            <div class="chart-container-card">
+              <div class="chart-header">
+                <h3><i class="fas fa-chart-pie text-primary"></i> Task Completion Overview</h3>
+                <span class="chart-badge">Status</span>
+              </div>
+              <div class="chart-canvas-box">
+                <canvas id="tasksChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-container-card">
+              <div class="chart-header">
+                <h3><i class="fas fa-chart-line text-success"></i> Weekly Productivity Velocity</h3>
+                <span class="chart-badge">Last 7 Days</span>
+              </div>
+              <div class="chart-canvas-box">
+                <canvas id="productivityChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-container-card">
+              <div class="chart-header">
+                <h3><i class="fas fa-chart-column text-purple"></i> Notes by Category</h3>
+                <span class="chart-badge">Distribution</span>
+              </div>
+              <div class="chart-canvas-box">
+                <canvas id="notesChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-container-card">
+              <div class="chart-header">
+                <h3><i class="fas fa-layer-group text-warning"></i> Task Priority Breakdown</h3>
+                <span class="chart-badge">Severity</span>
+              </div>
+              <div class="chart-canvas-box">
+                <canvas id="priorityChart"></canvas>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- 6. FAVORITES SECTION                                 -->
+        <!-- ==================================================== -->
+        <section id="favorites-section" class="page-section" aria-labelledby="favorites-page-title">
+          <div class="section-title-bar">
+            <div>
+              <h2 id="favorites-page-title">Starred & Favorites</h2>
+              <p class="section-desc">Quick access to your most important notes and starred deliverables.</p>
+            </div>
+          </div>
+
+          <div class="favorites-split-layout">
+            <div class="fav-section-block">
+              <div class="fav-section-header">
+                <h3><i class="fas fa-star text-gold"></i> Favorite Notes</h3>
+                <span class="pill-count" id="fav-notes-count">0</span>
+              </div>
+              <div class="fav-notes-grid" id="fav-notes-grid">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <div class="fav-section-block mt-8">
+              <div class="fav-section-header">
+                <h3><i class="fas fa-star text-gold"></i> Favorite Tasks</h3>
+                <span class="pill-count" id="fav-tasks-count">0</span>
+              </div>
+              <div class="fav-tasks-list" id="fav-tasks-list">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- 7. SETTINGS SECTION                                  -->
+        <!-- ==================================================== -->
+        <section id="settings-section" class="page-section" aria-labelledby="settings-page-title">
+          <div class="section-title-bar">
+            <div>
+              <h2 id="settings-page-title">Preferences & Settings</h2>
+              <p class="section-desc">Manage workspace aesthetics, profile credentials, notifications, and backups.</p>
+            </div>
+          </div>
+
+          <div class="settings-cards-grid">
+            
+            <!-- Appearance Settings -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <i class="fas fa-palette text-primary"></i>
+                <h3>Appearance & Theme</h3>
+              </div>
+              
+              <div class="setting-row">
+                <div class="setting-meta">
+                  <span class="setting-title">Dark Theme</span>
+                  <p class="setting-subtitle">Switch between modern dark slate and crisp daylight palettes</p>
+                </div>
+                <button class="toggle-switch" id="settings-dark-mode-toggle" aria-label="Toggle dark mode">
+                  <span class="toggle-slider"></span>
+                </button>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-meta">
+                  <span class="setting-title">Primary Accent Color</span>
+                  <p class="setting-subtitle">Choose your workspace brand highlight color</p>
+                </div>
+                <div class="color-palette-picker" id="accent-color-picker">
+                  <button class="color-dot active" data-color="#2563eb" style="background: #2563eb;"></button>
+                  <button class="color-dot" data-color="#10b981" style="background: #10b981;"></button>
+                  <button class="color-dot" data-color="#8b5cf6" style="background: #8b5cf6;"></button>
+                  <button class="color-dot" data-color="#f59e0b" style="background: #f59e0b;"></button>
+                  <button class="color-dot" data-color="#ec4899" style="background: #ec4899;"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <i class="fas fa-id-badge text-info"></i>
+                <h3>Profile Configuration</h3>
+              </div>
+              
+              <form id="settings-profile-form" class="settings-form">
+                <div class="form-row-2">
+                  <div class="form-field">
+                    <label for="settings-profile-name">Full Name</label>
+                    <input type="text" id="settings-profile-name" class="form-input" required>
+                  </div>
+                  <div class="form-field">
+                    <label for="settings-profile-email">Email Address</label>
+                    <input type="email" id="settings-profile-email" class="form-input" required>
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-field">
+                    <label for="settings-profile-role">Designation / Role</label>
+                    <input type="text" id="settings-profile-role" class="form-input">
+                  </div>
+                  <div class="form-field">
+                    <label for="settings-profile-avatar-seed">Avatar Seed / Style</label>
+                    <input type="text" id="settings-profile-avatar-seed" class="form-input" placeholder="e.g. Alex, Maya, Jordan">
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <label for="settings-profile-bio">Bio & Focus</label>
+                  <textarea id="settings-profile-bio" class="form-textarea" rows="2"></textarea>
+                </div>
+
+                <div class="form-actions-right">
+                  <button type="submit" class="btn-primary-sm">Save Profile</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <i class="fas fa-bell text-warning"></i>
+                <h3>Notification Preferences</h3>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-meta">
+                  <span class="setting-title">In-App Toast Alerts</span>
+                  <p class="setting-subtitle">Show interactive floating toast alerts for actions and task completions</p>
+                </div>
+                <button class="toggle-switch active" id="settings-notifications-toggle" aria-label="Toggle notifications">
+                  <span class="toggle-slider"></span>
+                </button>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-meta">
+                  <span class="setting-title">Upcoming Deadline Warnings</span>
+                  <p class="setting-subtitle">Alert when tasks are due within 24 hours or overdue</p>
+                </div>
+                <button class="toggle-switch active" id="settings-deadline-alerts-toggle" aria-label="Toggle deadline alerts">
+                  <span class="toggle-slider"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Data Management & Backups -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <i class="fas fa-database text-purple"></i>
+                <h3>Data Management & Portability</h3>
+              </div>
+              
+              <p class="settings-explainer">
+                All data is securely saved in your browser storage and synchronizes with the server API when running.
+              </p>
+
+              <div class="data-actions-grid">
+                <button class="btn-secondary" id="settings-demo-data-btn">
+                  <i class="fas fa-wand-magic-sparkles"></i> Load Demo Data
+                </button>
+                <button class="btn-secondary" id="settings-export-btn">
+                  <i class="fas fa-file-export"></i> Export JSON Backup
+                </button>
+                <button class="btn-secondary" id="settings-import-btn">
+                  <i class="fas fa-file-import"></i> Import JSON Backup
+                </button>
+                <input type="file" id="settings-import-file" accept=".json" hidden>
+                <button class="btn-danger" id="settings-clear-all-btn">
+                  <i class="fas fa-trash-can"></i> Clear All Data
+                </button>
+              </div>
+            </div>
+
+            <!-- About System & Server Routes -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <i class="fas fa-server text-secondary"></i>
+                <h3>System & Architecture</h3>
+              </div>
+              <div class="about-system-box">
+                <div class="system-spec">
+                  <span class="spec-label">Platform:</span>
+                  <span class="spec-val">Nexus Workspace v2.0</span>
+                </div>
+                <div class="system-spec">
+                  <span class="spec-label">Runtime:</span>
+                  <span class="spec-val">Node.js Express 4 Backend</span>
+                </div>
+                <div class="system-spec">
+                  <span class="spec-label">Storage:</span>
+                  <span class="spec-val">Dual LocalStorage + REST API Sync</span>
+                </div>
+                <div class="system-spec">
+                  <span class="spec-label">Preserved Routes:</span>
+                  <div class="spec-links">
+                    <a href="/about" class="spec-link"><code>GET /about</code></a>
+                    <a href="/contact" class="spec-link"><code>GET & POST /contact</code></a>
+                    <a href="/api/health" target="_blank" class="spec-link"><code>/api/health</code></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- 8. HELP & SUPPORT SECTION                            -->
+        <!-- ==================================================== -->
+        <section id="help-section" class="page-section" aria-labelledby="help-page-title">
+          <div class="section-title-bar">
+            <div>
+              <h2 id="help-page-title">Help & Documentation</h2>
+              <p class="section-desc">Keyboard shortcuts, workflow tips, and troubleshooting resources.</p>
+            </div>
+            <a href="/contact" class="btn-secondary">
+              <i class="fas fa-envelope"></i> Contact Support
+            </a>
+          </div>
+
+          <div class="help-cards-grid">
+            
+            <div class="help-card">
+              <div class="help-card-icon"><i class="fas fa-keyboard"></i></div>
+              <h3>Keyboard Shortcuts</h3>
+              <p>Work faster with built-in productivity key combinations:</p>
+              <div class="shortcuts-table">
+                <div class="shortcut-row">
+                  <span class="shortcut-action">Global Search</span>
+                  <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>K</kbd></span>
+                </div>
+                <div class="shortcut-row">
+                  <span class="shortcut-action">Create New Note</span>
+                  <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>N</kbd></span>
+                </div>
+                <div class="shortcut-row">
+                  <span class="shortcut-action">Create New Task</span>
+                  <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>T</kbd></span>
+                </div>
+                <div class="shortcut-row">
+                  <span class="shortcut-action">Close Dialogs & Menus</span>
+                  <span class="shortcut-keys"><kbd>Esc</kbd></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="help-card">
+              <div class="help-card-icon"><i class="fas fa-lightbulb"></i></div>
+              <h3>Pro Tips & Features</h3>
+              <ul class="help-bullets">
+                <li><strong>Pinning:</strong> Mark critical notes as pinned to keep them pinned at the top of your vault.</li>
+                <li><strong>Favorites:</strong> Click the star icon on any note or task to add it to your Starred view.</li>
+                <li><strong>Calendar Sync:</strong> Tasks with due dates automatically render on the calendar days grid.</li>
+                <li><strong>Data Portability:</strong> Use the Export feature in Settings to download your entire database as a JSON backup anytime.</li>
+              </ul>
+            </div>
+
+            <div class="help-card">
+              <div class="help-card-icon"><i class="fas fa-shield-halved"></i></div>
+              <h3>Data Persistence & Offline</h3>
+              <p>Your notes and tasks are preserved locally via <code>localStorage</code>, meaning you will never lose work upon browser refresh or server restarts.</p>
+              <div class="mt-4">
+                <button class="btn-secondary-sm" id="help-load-demo-btn">
+                  <i class="fas fa-wand-magic-sparkles"></i> Populate Sample Data
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- MODALS & DIALOGS                                     -->
+  <!-- ==================================================== -->
+
+  <!-- 1. Note Modal -->
+  <div class="modal-backdrop" id="note-modal" role="dialog" aria-modal="true" aria-labelledby="note-modal-title" hidden>
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="note-modal-title"><i class="fas fa-sticky-note text-primary"></i> <span id="note-modal-title-text">New Note</span></h3>
+        <button class="modal-close-icon" data-close-modal="note-modal" aria-label="Close dialog">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <form id="note-form" class="modal-form">
+        <div class="form-field">
+          <label for="note-title-input">Note Title <span class="required">*</span></label>
+          <input type="text" id="note-title-input" class="form-input" placeholder="e.g. Q4 Strategy & Milestones" required maxlength="120">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <label for="note-category-select">Category</label>
+            <select id="note-category-select" class="form-select">
+              <option value="work">💼 Work</option>
+              <option value="personal">👤 Personal</option>
+              <option value="ideas">💡 Ideas</option>
+              <option value="study">🎓 Study</option>
+              <option value="other">📌 Other</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Color Accent</label>
+            <div class="color-picker-row" id="note-color-picker">
+              <label class="color-radio"><input type="radio" name="note-color" value="#3b82f6" checked><span style="background: #3b82f6;"></span></label>
+              <label class="color-radio"><input type="radio" name="note-color" value="#10b981"><span style="background: #10b981;"></span></label>
+              <label class="color-radio"><input type="radio" name="note-color" value="#8b5cf6"><span style="background: #8b5cf6;"></span></label>
+              <label class="color-radio"><input type="radio" name="note-color" value="#f59e0b"><span style="background: #f59e0b;"></span></label>
+              <label class="color-radio"><input type="radio" name="note-color" value="#ec4899"><span style="background: #ec4899;"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="note-content-input">Content</label>
+          <textarea id="note-content-input" class="form-textarea" rows="6" placeholder="Write markdown or structured notes..."></textarea>
+        </div>
+
+        <div class="form-toggles-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="note-pinned-checkbox">
+            <span><i class="fas fa-thumbtack"></i> Pin to Top</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="note-favorite-checkbox">
+            <span><i class="fas fa-star text-gold"></i> Add to Favorites</span>
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal="note-modal">Cancel</button>
+          <button type="submit" class="btn-primary" id="save-note-btn">Save Note</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Task Modal -->
+  <div class="modal-backdrop" id="task-modal" role="dialog" aria-modal="true" aria-labelledby="task-modal-title" hidden>
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="task-modal-title"><i class="fas fa-check-circle text-success"></i> <span id="task-modal-title-text">New Task</span></h3>
+        <button class="modal-close-icon" data-close-modal="task-modal" aria-label="Close dialog">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="task-form" class="modal-form">
+        <div class="form-field">
+          <label for="task-title-input">Task Title <span class="required">*</span></label>
+          <input type="text" id="task-title-input" class="form-input" placeholder="e.g. Conduct API security audit" required maxlength="150">
+        </div>
+
+        <div class="form-field">
+          <label for="task-desc-input">Description / Subtasks</label>
+          <textarea id="task-desc-input" class="form-textarea" rows="3" placeholder="Key details, checklist items or requirements..."></textarea>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-field">
+            <label for="task-priority-select">Priority</label>
+            <select id="task-priority-select" class="form-select">
+              <option value="low">🟢 Low</option>
+              <option value="medium" selected>🟡 Medium</option>
+              <option value="high">🔴 High</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="task-due-date-input">Due Date</label>
+            <input type="date" id="task-due-date-input" class="form-input">
+          </div>
+
+          <div class="form-field">
+            <label for="task-category-select">Category</label>
+            <select id="task-category-select" class="form-select">
+              <option value="work">💼 Work</option>
+              <option value="personal">👤 Personal</option>
+              <option value="ideas">💡 Ideas</option>
+              <option value="study">🎓 Study</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-toggles-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="task-favorite-checkbox">
+            <span><i class="fas fa-star text-gold"></i> Star as Favorite Deliverable</span>
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal="task-modal">Cancel</button>
+          <button type="submit" class="btn-primary" id="save-task-btn">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Edit Profile Modal -->
+  <div class="modal-backdrop" id="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profile-modal-title" hidden>
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="profile-modal-title"><i class="fas fa-user-pen text-info"></i> Edit Profile</h3>
+        <button class="modal-close-icon" data-close-modal="profile-modal" aria-label="Close dialog">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="profile-modal-form" class="modal-form">
+        <div class="modal-avatar-preview-box">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Avatar preview" class="avatar-preview-lg" id="modal-avatar-preview">
+          <div>
+            <span class="preview-note">Avatar updates dynamically from seed:</span>
+            <div class="avatar-seed-presets">
+              <button type="button" class="seed-preset-chip" data-seed="Alex">Alex</button>
+              <button type="button" class="seed-preset-chip" data-seed="Jordan">Jordan</button>
+              <button type="button" class="seed-preset-chip" data-seed="Maya">Maya</button>
+              <button type="button" class="seed-preset-chip" data-seed="Sam">Sam</button>
+              <button type="button" class="seed-preset-chip" data-seed="Morgan">Morgan</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <label for="profile-modal-name">Display Name</label>
+            <input type="text" id="profile-modal-name" class="form-input" required>
+          </div>
+          <div class="form-field">
+            <label for="profile-modal-seed">Custom Seed</label>
+            <input type="text" id="profile-modal-seed" class="form-input" placeholder="e.g. Phoenix">
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <label for="profile-modal-email">Email</label>
+            <input type="email" id="profile-modal-email" class="form-input" required>
+          </div>
+          <div class="form-field">
+            <label for="profile-modal-role">Role</label>
+            <input type="text" id="profile-modal-role" class="form-input">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal="profile-modal">Cancel</button>
+          <button type="submit" class="btn-primary">Update Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Confirmation Dialog Modal -->
+  <div class="modal-backdrop" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title" hidden>
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3 id="confirm-modal-title"><i class="fas fa-triangle-exclamation text-danger"></i> <span id="confirm-title-text">Confirm Action</span></h3>
+        <button class="modal-close-icon" data-close-modal="confirm-modal" aria-label="Close dialog">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body-pad">
+        <p id="confirm-message-text">Are you sure you want to proceed with this operation?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="confirm-cancel-btn">Cancel</button>
+        <button type="button" class="btn-danger" id="confirm-action-btn">Proceed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Stack -->
+  <div class="toast-stack" id="toast-container" aria-live="polite"></div>
+
+  <!-- Application Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="/dashboard.js"></script>
+</body>
+</html>
